@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Timers;
 using System.Windows.Forms;
 using WinSCP;
 using System.IO;
@@ -10,13 +11,18 @@ namespace Liller_Backup_Tool
 {
     public partial class MainForm : Form
     {
+       
 
         //create data table
         DataTable table;
         public MainForm()
         {
             InitializeComponent();
+            
         }
+
+
+       
 
         //form load
         private void MainForm_Load(object sender, EventArgs e)
@@ -28,11 +34,12 @@ namespace Liller_Backup_Tool
             uploadedTableGrid.Columns["Files Uploaded"].Width = 300;
         }
 
+        
 
         //------------------ EVENT OBJECTS ------------------ //
 
 
- 
+
         //select folder button
         private void butOpen_Click_1(object sender, EventArgs e)
         {
@@ -83,9 +90,9 @@ namespace Liller_Backup_Tool
             SessionOptions sessionOptions = new SessionOptions
             {
                 Protocol = Protocol.Ftp,
-                HostName = "", //NEEDS TO BE MODIFIED TO MATCH FTP HOST ADDRESS
-                UserName = "", //NEEDS TO BE MODIFIED TO MATCH FTP USERNAME
-                Password = "", //NEEDS TO BE MODIFIED TO MATCH FTP PASSWORDs
+                HostName = @ftpHost.Text, 
+                UserName = @ftpUser.Text, 
+                Password = @ftpPass.Text, 
 
 
             };
@@ -96,13 +103,16 @@ namespace Liller_Backup_Tool
                 // Connect
                 session.Open(sessionOptions);
                 session.FileTransferred += FileTransferred;
+                //progress
+  
+
                 // Synchronize files
                 SynchronizationResult synchronizationResult;
                 synchronizationResult =
                     session.SynchronizeDirectories(
                         SynchronizationMode.Remote, @buPath.Text, "/backup", false); // "/backup" can be modified to desired path on remote server
 
-            }
+    }
         }
 
 
@@ -142,7 +152,6 @@ namespace Liller_Backup_Tool
 
             table.Rows.Add(e.FileName);
         }
-
 
     }
 }
